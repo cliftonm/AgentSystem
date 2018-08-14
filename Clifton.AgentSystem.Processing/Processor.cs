@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Dynamic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,16 +15,43 @@ namespace Clifton.AgentSystem.Processing
         protected ConcurrentQueue<dynamic> dataPool = new ConcurrentQueue<dynamic>();
         protected Semaphore dataSemaphore = new Semaphore(0, int.MaxValue);
 
+        public void RegisterAgent(IAgent agent)
+        {
+            agentPool.Add(agent);
+        }
+
         public void QueueData(dynamic data)
         {
             dataPool.Enqueue(data);
             dataSemaphore.Release();
         }
 
+        public void StartSynchronousProcessing()
+        {
+            StartProcessing(ProcessSynchronously);
+        }
+
+        public void StartAsynchrononousProcessing()
+        {
+            StartProcessing(ProcessAsynchronously);
+        }
+
+        protected void StartProcessing(Action processor)
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    dataSemaphore.WaitOne();
+                    processor();
+                }
+            });
+        }
+
         protected void ProcessSynchronously()
         {
             dataPool.TryDequeue(out dynamic data);
-            var agents = agentPool.Where(a => a.Context == data.Context && a.DataType == data.Type).ToList();
+            var agents = agentPool.Where(a => (a.Context == data.Context || a.Context == Constants.AnyContext) && a.DataType == data.Type).ToList();
             Log(agents, data);
             agents.ForEach(agent => agent.Call(this, data));
         }
@@ -33,7 +59,7 @@ namespace Clifton.AgentSystem.Processing
         protected void ProcessAsynchronously()
         {
             dataPool.TryDequeue(out dynamic data);
-            var agents = agentPool.Where(a => a.Context == data.Context && a.DataType == data.Type).ToList();
+            var agents = agentPool.Where(a => (a.Context == data.Context || a.Context == Constants.AnyContext) && a.DataType == data.Type).ToList();
             Log(agents, data);
             agents.ForEach(agent => { Task.Run(() => agent.Call(this, (object)data)); });
         }
@@ -41,17 +67,6 @@ namespace Clifton.AgentSystem.Processing
         protected void Log(IEnumerable<IAgent> agents, dynamic data)
         {
             agents.ForEach(agent => Console.WriteLine("Invoking " + agent.GetType().Name + " : " + data.Context + "." + data.Type));
-        }
-
-        // This works as an Evaluate!
-        // Map = "var today=new Date(); ({date: today.getFullYear()+'-'+('0' + (today.getMonth()+1)).slice(-2) +'-'+('0' + today.getDate()).slice(-2)});",
-
-        public dynamic CreateExpando(Dictionary<string, dynamic> collection)
-        {
-            var obj = (IDictionary<string, object>)new ExpandoObject();
-            collection.ForEach(kvp => obj[kvp.Key] = kvp.Value);
-
-            return obj;
         }
     }
 }

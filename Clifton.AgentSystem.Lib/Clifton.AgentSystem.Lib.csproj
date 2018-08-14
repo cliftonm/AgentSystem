@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgentType.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IAgent.cs" />
     <Compile Include="IProcessor.cs" />

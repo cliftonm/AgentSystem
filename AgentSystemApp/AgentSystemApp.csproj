@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AEE31D9A-C065-49A0-965B-80E1D197A783}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>AgentSystemApp</RootNamespace>
     <AssemblyName>AgentSystemApp</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,14 +48,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Constants.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -74,6 +82,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Clifton.AgentSystem.Agents\Clifton.AgentSystem.Agents.csproj">
+      <Project>{9af05285-f9b4-4990-a31a-0671e53f0a1a}</Project>
+      <Name>Clifton.AgentSystem.Agents</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Clifton.AgentSystem.Lib\Clifton.AgentSystem.Lib.csproj">
+      <Project>{5d48ce62-79ac-4367-b241-cf511bc9f0e1}</Project>
+      <Name>Clifton.AgentSystem.Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Clifton.AgentSystem.Processing\Clifton.AgentSystem.Processing.csproj">
+      <Project>{3349d3bc-c9cc-4fea-943e-43f144d92566}</Project>
+      <Name>Clifton.AgentSystem.Processing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

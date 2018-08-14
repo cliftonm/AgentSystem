@@ -1,22 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using Clifton.AgentSystem.Agents;
+using Clifton.AgentSystem.Lib;
+using Clifton.AgentSystem.Processing;
 
 namespace AgentSystemApp
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        static MainForm mainForm;
+
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            mainForm = new MainForm();
+
+            Processor processor = InitializeAgentSystem();
+            RegisterAgents(processor);
+            StartAgentSystem(processor);
+            SayHello(processor);
+
+            Application.Run(mainForm);
+        }
+
+        static Processor InitializeAgentSystem()
+        {
+            Processor processor = new Processor();
+
+            return processor;
+        }
+
+        static void RegisterAgents(Processor processor)
+        {
+            processor.RegisterAgent(new OutputAgent(Clifton.AgentSystem.Lib.Constants.AnyContext, "LogMessage", null, data => Log(data.Message)));
+            processor.RegisterAgent(new AppConfigAgent("AppConfig", "Key", "AppConfigValue"));
+        }
+
+        static void StartAgentSystem(Processor processor)
+        {
+            processor.StartAsynchrononousProcessing();
+        }
+
+        static void SayHello(Processor processor)
+        {
+            var hello = AgentType.New("App", "LogMessage").KeyValue("Message", "Agent System Running").Get();
+            processor.QueueData(hello);
+        }
+
+        static void Log(string msg)
+        {
+            mainForm.Log(msg);
         }
     }
 }

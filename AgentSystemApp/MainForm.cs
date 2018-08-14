@@ -8,13 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Clifton.Core.ExtensionMethods;
+
 namespace AgentSystemApp
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
+        }
+
+        public void Log(string msg)
+        {
+            tbLog.Invoke(() => tbLog.AppendText(msg + Constants.CRLF));
         }
     }
 }
