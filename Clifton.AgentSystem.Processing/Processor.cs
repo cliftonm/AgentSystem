@@ -31,7 +31,7 @@ namespace Clifton.AgentSystem.Processing
             StartProcessing(ProcessSynchronously);
         }
 
-        public void StartAsynchrononousProcessing()
+        public void StartAsynchronousProcessing()
         {
             StartProcessing(ProcessAsynchronously);
         }
@@ -51,7 +51,7 @@ namespace Clifton.AgentSystem.Processing
         protected void ProcessSynchronously()
         {
             dataPool.TryDequeue(out dynamic data);
-            var agents = agentPool.Where(a => (a.Context == data.Context || a.Context == Constants.AnyContext) && a.DataType == data.Type).ToList();
+            var agents = agentPool.Where(a => (a.Context == data.Context || a.Context == Constants.AnyContext) && (a.DataType == data.Type || a.DataType == Constants.AnyDataType)).ToList();
             Log(agents, data);
             agents.ForEach(agent => agent.Call(this, data));
         }

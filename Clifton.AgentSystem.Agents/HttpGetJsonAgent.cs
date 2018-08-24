@@ -28,8 +28,7 @@ namespace Clifton.AgentSystem.Agents
                             // https://blogs.msdn.microsoft.com/henrikn/2012/02/17/httpclient-downloading-to-a-local-file/
                             var str = await streamReader.ReadToEndAsync();
                             dynamic resp = JsonConvert.DeserializeObject<ExpandoObject>(str);
-                            resp.Context = ResponseContext ?? data.Context;
-                            resp.Type = ResponseDataType;
+                            SetContextAndType(data, resp);
                             processor.QueueData(resp);
                         }
                     }

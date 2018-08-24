@@ -4,6 +4,9 @@ using Clifton.AgentSystem.Lib;
 
 namespace Clifton.AgentSystem.Agents
 {
+    /// <summary>
+    /// Terminal agent.  Message is not re-queued.
+    /// </summary>
     public class OutputAgent : Agent
     {
         protected Action<dynamic> action;
@@ -16,9 +19,9 @@ namespace Clifton.AgentSystem.Agents
         public override void Call(IProcessor processor, dynamic data)
         {
             action(data);
-            data.Context = ResponseContext ?? data.Context;
-            data.Type = ResponseDataType;
-            processor.QueueData(data);
+            //data.Context = ResponseContext ?? data.Context;
+            //data.Type = ResponseDataType;
+            //processor.QueueData(data);
         }
     }
 }

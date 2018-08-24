@@ -16,9 +16,9 @@ namespace Clifton.AgentSystem.Agents
         public override void Call(IProcessor processor, dynamic data)
         {
             Thread.Sleep(msSleep);
-            data.Context = ResponseContext ?? data.Context;
-            data.Type = ResponseDataType;
-            processor.QueueData(data);
+            var resp = data;
+            SetContextAndType(data, resp);
+            processor.QueueData(resp);
         }
     }
 }

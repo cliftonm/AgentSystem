@@ -7,6 +7,9 @@ using Clifton.AgentSystem.Lib;
 
 namespace Clifton.AgentSystem.Agents
 {
+    /// <summary>
+    /// Terminal agent.  Message is not re-queued.
+    /// </summary>
     public class ConsoleLogAgent : Agent
     {
         public ConsoleLogAgent(string context, string dataType, string responseDataType) : base(context, dataType, responseDataType)
@@ -20,9 +23,9 @@ namespace Clifton.AgentSystem.Agents
                 ((IDictionary<string, object>)data).Where(kvp => kvp.Key != "Context" && kvp.Key != "Type").ForEach(kvp => Console.WriteLine(kvp.Key + " = " + kvp.Value.ToString()));
             }
 
-            data.Context = ResponseContext ?? data.Context;
-            data.Type = ResponseDataType;
-            processor.QueueData(data);
+            //data.Context = ResponseContext ?? data.Context;
+            //data.Type = ResponseDataType;
+            //processor.QueueData(data);
         }
     }
 }

@@ -4,18 +4,18 @@ using Clifton.AgentSystem.Lib;
 
 namespace Clifton.AgentSystem.Agents
 {
-    public class AppConfigAgent : Agent
+    public class AppSettingAgent : Agent
     {
-        public AppConfigAgent(string context, string dataType, string responseDataType) : base(context, dataType, responseDataType)
+        public AppSettingAgent(string context, string dataType, string responseDataType) : base(context, dataType, responseDataType)
         {
         }
 
         public override void Call(IProcessor processor, dynamic data)
         {
-            data.Value = ConfigurationManager.AppSettings.Get(data.Key);
-            data.Context = ResponseContext ?? data.Context;
-            data.Type = ResponseDataType;
-            processor.QueueData(data);
+            string setting = ConfigurationManager.AppSettings.Get(data.AppSetting);
+            var resp = AgentType.New().KeyValue("Value", setting).Get();
+            SetContextAndType(data, resp);
+            processor.QueueData(resp);
         }
     }
 }

@@ -25,10 +25,9 @@ namespace Clifton.AgentSystem.Agents
                     using (var stream = await response.Content.ReadAsStreamAsync())
                     {
                         var image = Image.FromStream(stream);
-                        data.Image = image;
-                        data.Context = ResponseContext ?? data.Context;
-                        data.Type = ResponseDataType;
-                        processor.QueueData(data);
+                        var resp = AgentType.New().KeyValue("Image", image).Get();
+                        SetContextAndType(data, resp);
+                        processor.QueueData(resp);
                     }
                 }
             }

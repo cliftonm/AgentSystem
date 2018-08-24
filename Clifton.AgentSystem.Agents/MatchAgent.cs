@@ -18,16 +18,16 @@ namespace Clifton.AgentSystem.Agents
     // If context and/or responseContext are left out, the context for the agent is used.
     public class MatchAgent : Agent
     {
-        protected List<(Func<dynamic, dynamic, bool> condition, Func<dynamic, dynamic, dynamic> map, bool useAgentContextAndType)> matches =
-            new List<(Func<dynamic, dynamic, bool>, Func<dynamic, dynamic, dynamic>, bool)>();
+        protected List<(Func<dynamic, dynamic, bool> condition, Func<dynamic, dynamic, dynamic> map)> matches =
+            new List<(Func<dynamic, dynamic, bool>, Func<dynamic, dynamic, dynamic>)>();
 
         public MatchAgent(string context, string dataType, string responseDataType) : base(context, dataType, responseDataType)
         {
         }
 
-        public MatchAgent Add(Func<dynamic, dynamic, bool> condition, Func<dynamic, dynamic, dynamic> map, bool useAgentContextAndType = true)
+        public MatchAgent Add(Func<dynamic, dynamic, bool> condition, Func<dynamic, dynamic, dynamic> map)
         {
-            matches.Add((condition, map, useAgentContextAndType));
+            matches.Add((condition, map));
 
             return this;
         }
@@ -36,10 +36,10 @@ namespace Clifton.AgentSystem.Agents
         {
             var match = matches.FirstOrDefault(t => t.condition(ContextData, data));
 
-            if (!match.Equals((null, null, false)))
+            if (!match.Equals((null, null)))
             {
                 dynamic resp = match.map(ContextData, data);
-                SetContextAndType(data, resp, match.useAgentContextAndType);
+                SetContextAndType(data, resp);
                 processor.QueueData(resp);
             }
         }

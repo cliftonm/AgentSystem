@@ -36,18 +36,21 @@ namespace AgentSystemApp
         static void RegisterAgents(Processor processor)
         {
             processor.RegisterAgent(new OutputAgent(Clifton.AgentSystem.Lib.Constants.AnyContext, "LogMessage", null, data => Log(data.Message)));
-            processor.RegisterAgent(new AppConfigAgent("AppConfig", "Key", "AppConfigValue"));
+            processor.RegisterAgent(new AppSettingAgent("AppSetting", "Key", "AppConfigValue"));
+            processor.RegisterAgent(new ConsoleLogAgent("*", "*", null));
         }
 
         static void StartAgentSystem(Processor processor)
         {
-            processor.StartAsynchrononousProcessing();
+            processor.StartSynchronousProcessing();
         }
 
         static void SayHello(Processor processor)
         {
             var hello = AgentType.New("App", "LogMessage").KeyValue("Message", "Agent System Running").Get();
+            var dbName = AgentType.New("AppSetting", "Key").KeyValue("AppSetting", "dbName").KeyValue("ResponseContext", "dbName").Get();
             processor.QueueData(hello);
+            processor.QueueData(dbName);
         }
 
         static void Log(string msg)

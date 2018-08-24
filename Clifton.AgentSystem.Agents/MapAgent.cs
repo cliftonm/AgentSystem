@@ -11,17 +11,14 @@ namespace Clifton.AgentSystem.Agents
     {
         public Func<dynamic, dynamic, dynamic> Map { get; set; }
 
-        protected bool useAgentContextAndType;
-
-        public MapAgent(string context, string dataType, string responseDataType, bool useAgentContextAndType = true) : base(context, dataType, responseDataType)
+        public MapAgent(string context, string dataType, string responseDataType) : base(context, dataType, responseDataType)
         {
-            this.useAgentContextAndType = useAgentContextAndType;
         }
 
         public override void Call(IProcessor processor, dynamic data)
         {
             var resp = Map == null ? ((Func<dynamic, dynamic, bool>)data.Map)(ContextData, data) : Map(ContextData, data);
-            SetContextAndType(data, resp, useAgentContextAndType);
+            SetContextAndType(data, resp);
             processor.QueueData(resp);
         }
     }
